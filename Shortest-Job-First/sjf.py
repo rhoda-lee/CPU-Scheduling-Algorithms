@@ -1,7 +1,7 @@
 import heapq
 from task import Tasks
 
-class AdaptiveSJF:
+class ShortestJob:
     def __init__(self, tasks):
         self.tasks = sorted(tasks, key=lambda p: p.arrival_time)
         self.time = 0
@@ -41,13 +41,13 @@ class AdaptiveSJF:
             self.ready_queue[idx] = (task.burst_time, task.priority, task)
         heapq.heapify(self.ready_queue)
 
-# Example usage
+# Usage
 tasks = [
     Tasks("P1", 0, 10, 1),
     Tasks("P2", 2, 5, 2),
     Tasks("P3", 4, 7, 3)
 ]
-scheduler = AdaptiveSJF(tasks)
+scheduler = ShortestJob(tasks)
 result = scheduler.simulate()
 print("Gantt Chart:", result[0])
 print("Average Waiting Time:", result[1])
