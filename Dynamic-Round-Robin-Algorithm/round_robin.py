@@ -23,7 +23,7 @@ class RoundRobin:
 
         # Main loop of the simulation
         while self.priority_queue or self.ready_queue:
-            while self.priority_queue and self.priority_queue[0][0 <= self.time]:
+            while self.priority_queue and self.priority_queue[0][0] <= self.time:
                 _, task = heapq.heappop(self.priority_queue)
                 self.ready_queue.append(task)
 
