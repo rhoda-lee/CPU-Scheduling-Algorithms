@@ -3,7 +3,7 @@ from memory import MemoryManager
 from io_management import IORequest, Device
 
 def unified_simulation(io_requests, reference_sequence, frames):
-    # Initialize subsystems
+    '''Initialize subsystems'''
     devices = defaultdict(Device)
     memory_manager = MemoryManager(frames)
     
@@ -12,18 +12,18 @@ def unified_simulation(io_requests, reference_sequence, frames):
             devices[request.device_type] = Device(request.device_type)
         devices[request.device_type].add_request(request)
     
-    total_requests = len(io_requests)  # Track total number of requests
-    time = 0  # Track overall system time
+    total_requests = len(io_requests)
+    time = 0
     
-    # Process requests for each device
+    '''Process requests for each device'''
     for device in devices.values():
         device.process_next_request()
         for request_id, start_time, end_time in device.timeline:
-            # Simulate memory accesses during I/O processing
-            memory_page = int(request_id[1:])  # Example: Derive page from Request ID
+            '''Simulate memory accesses during I/O processing'''
+            memory_page = int(request_id[1:])
             memory_manager.access_page(memory_page)
     
-    # Calculate overall metrics
+    '''Calculate overall metrics'''
     total_throughput = sum(len(device.timeline) for device in devices.values())
     avg_response_time = sum((end - start for device in devices.values() for _, start, end in device.timeline)) / total_requests
     total_busy_time = sum(device.total_busy_time for device in devices.values())
@@ -32,7 +32,7 @@ def unified_simulation(io_requests, reference_sequence, frames):
     
     memory_metrics = memory_manager.calculate_metrics()
     
-    # Output performance metrics
+    '''Output performance metrics'''
     print("\nUnified Subsystem Metrics:")
     print(f"Total Throughput: {total_throughput} requests")
     print(f"Average Response Time: {avg_response_time:.2f} ms")
@@ -42,12 +42,12 @@ def unified_simulation(io_requests, reference_sequence, frames):
     print(f"  Hit Ratio: {memory_metrics['Hit Ratio']:.2f}")
     print(f"  Average Memory Access Time: {memory_metrics['Average Memory Access Time']:.2f} ms")
 
-    # Print memory replacement timeline for visualization
+    '''Print memory replacement timeline for visualization'''
     print("\nMemory Replacement Timeline:")
     for step, state in enumerate(memory_manager.timeline):
         print(f"Step {step + 1}: {state}")
 
-# Example Usage
+'''Example Usage'''
 unified_requests = [
     IORequest("R1", "Disk", 0, 20),
     IORequest("R2", "Printer", 10, 25),
