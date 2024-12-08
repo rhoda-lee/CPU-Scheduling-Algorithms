@@ -20,14 +20,15 @@ class Device:
         self.timeline = []
         self.current_time = 0
         self.total_busy_time = 0
-        self.idle_time = 0  # New attribute to track idle time
+        self.idle_time = 0 
 
     def add_request(self, io_request):
         heapq.heappush(self.queue, io_request)
 
     def process_next_request(self):
         if not self.queue:
-            return None  # Device is idle
+            '''Device is idle'''
+            return None  
         
         current_request = heapq.heappop(self.queue)
         start_time = max(self.current_time, current_request.arrival_time)
@@ -35,7 +36,7 @@ class Device:
         self.timeline.append((current_request.request_id, start_time, finish_time))
         self.total_busy_time += current_request.duration
         self.current_time = finish_time
-        self.idle_time = 0  # Reset idle time after processing
+        self.idle_time = 0
         return finish_time
 
     def increment_idle_time(self, increment):
@@ -60,28 +61,29 @@ def simulate_io_management(io_requests):
             else:
                 device.increment_idle_time(1)
 
-        # Dynamic queue management
+        '''Dynamic queue management'''
         for device in devices.values():
-            if device.idle_time > 10:  # Device is idle for more than 10ms
-                # Find a request to steal from other devices
+            if device.idle_time > 10:
+                '''Find a request to steal from other devices'''
                 longest_waiting_request = None
                 donor_device = None
                 for other_device in devices.values():
                     if other_device is not device and other_device.queue:
-                        # Find the request with the longest wait time
+                        '''Find the request with the longest wait time'''
                         waiting_request = other_device.queue[0]
                         if not longest_waiting_request or waiting_request.arrival_time < longest_waiting_request.arrival_time:
                             longest_waiting_request = waiting_request
                             donor_device = other_device
                 
                 if longest_waiting_request:
-                    # Steal the request
+                    '''Steal the request'''
                     donor_device.queue.remove(longest_waiting_request)
-                    heapq.heapify(donor_device.queue)  # Re-heapify the donor device queue
+                    heapq.heapify(donor_device.queue)
                     device.add_request(longest_waiting_request)
-                    device.idle_time = 0  # Reset idle time after stealing
+                    '''Reset idle time after stealing'''
+                    device.idle_time = 0  
 
-    # Output metrics
+    '''Output metrics'''
     for device_type, device in devices.items():
         print(f"\nDevice: {device_type}")
         print("Timeline:", device.timeline)
@@ -100,7 +102,7 @@ def simulate_io_management(io_requests):
         print(f"Device Utilization: {utilization:.2f}%")
 
 
-# Example Usage
+''' Example Usage'''
 requests = [
     IORequest("R1", "Disk", 0, 20),
     IORequest("R2", "Printer", 10, 25),
